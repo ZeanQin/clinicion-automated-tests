@@ -2,10 +2,16 @@ import {expect} from 'chai';
 import {Selector} from 'testcafe';
 import {ClientFunction} from 'testcafe';
 
-const partialHosptialTitle = 'TestCafe Hosptial';
-const sampleTexts = 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.'; 
+// initialise hospital properties
+const hospitalNamePrefix = 'TestCafe Hosptial - ';
+const hospitalNamePostfix = Math.random().toString(36).substr(2, 9);
+const hospitalName = hospitalNamePrefix + hospitalNamePostfix;
+const portalURL =  hospitalNamePostfix + '.qa.clinicion.com';
+const emailSignature = 'Welcome to ' + hospitalName;
 
-fixture ('Forum')
+var pageURL; 
+
+fixture ('Communities')
   .page('http://qa.clinicion.com')
   .beforeEach( async t => {
     await t
@@ -20,18 +26,17 @@ fixture ('Forum')
   expect((await t.select('#Title')).value).to.equal('Hospitals');
   });
 
+// test community listing
 test('Listing Hosptials', async t => {
   expect((await t.select('#Title')).value).to.equal('Hospitals');
 });
 
+// test community creation
 test('Creating Hosptial', async t => {
   await t.click('.action-bar-create');
-  expect((await t.select('#Title')).value).to.equal('Create a new Hospital');
+  expect((await t.select('#Title')).value).to
+    .equal('Create a new Hospital');
 
-  var hospitalNamePostFix = Math.random().toString(36).substr(2, 9);
-  var hospitalName = partialHosptialTitle + ' - ' +  hospitalNamePostFix;
-  var portalURL = hospitalNamePostFix + '.qa.clinicion.com';
-  var emailSignature = 'Welcome to ' + hospitalName;
   var culture = ClientFunction(() => document
     .getElementById('Culture').selectedIndex=94);
   var colour = ClientFunction(() => document
@@ -47,9 +52,15 @@ test('Creating Hosptial', async t => {
  
   await t.click('.post-action'); 
 
-  expect((await t.select('.panel-heading span')).innerText.trim()).to.equal(hospitalName);
+  expect((await t.select('.panel-heading span')).innerText.trim())
+    .to.equal(hospitalName);
 
-
-
+  // get current community URL
+  const getPathName = ClientFunction(() => window.location.pathname);
+  pageURL = await getPathName();
 });
 
+// testing hospital details page
+test('List Hospital Details', async t => {
+  await t.navigateTo(pageURL);
+});
