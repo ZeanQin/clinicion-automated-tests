@@ -9,7 +9,7 @@ fixture ('Forum')
   .page('http://qa.clinicion.com')
   .beforeEach( async t => {
     await t
-    .typeText('#UserName', 'me@zean.be')
+    .typeText('#UserName', 'testcafe@zean.be')
     .typeText('#Password', 'qiN...4A')
     .click('.btn-login');
 
