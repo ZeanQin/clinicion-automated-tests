@@ -1,5 +1,9 @@
 import {expect} from 'chai';
 import {Selector} from 'testcafe';
+import {ClientFunction} from 'testcafe';
+
+const forumTitle = 'Automatically Generated Question By TestCafe';
+const sampleTexts = 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.'; 
 
 fixture ('Forum')
   .page('http://qa.clinicion.com')
@@ -25,11 +29,30 @@ test('Adding New Question', async t => {
   expect((await t.select('#Title')).value).to
   .equal('Create a new question');
 
-  await Selector(() => document.getElementById('MembershipId').selectedIndex=1);
-  await t.typeText('#Name', 'Automatically Generated Question By TestCafe');
-  await t.typeText('#Description', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.');
+  const setShareScope = ClientFunction(() => document
+    .getElementById('MembershipId').selectedIndex=1);
+  await setShareScope();
+  await t.typeText('#Name', forumTitle);
+  await t.typeText('#Description', sampleTexts);
   await t.click('.post-action');
 
-  //expect((await t.select('#Title')).value).to
-  //.equal('Automatically Generated Question By TestCafe');
+  expect((await t.select('#Title')).value).to
+  .equal('Automatically Generated Question By TestCafe');
+});
+
+test('Posting Comments', async t => {
+  expect((await t.select('#Title')).value).to.equal('Discuss');
+
+  const getFirstQuestion = Selector(() => document
+    .getElementsByClassName('load-more-list')[0].rows[1]);
+
+  await t.click(getFirstQuestion());
+
+  expect((await t.select('#Title')).value).to.equal(forumTitle);
+
+  await t
+  .typeText('#Body', sampleTexts)
+  .click(Selector(() => document.getElementsByName('submitPost')[0]));
+
+  expect((await t.select('#Title')).value).to.equal(forumTitle);
 });
