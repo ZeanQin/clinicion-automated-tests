@@ -1,3 +1,4 @@
+import {loginURL, userName, password} from './lib/LoginDetails.js';
 import {expect} from 'chai';
 import {Selector} from 'testcafe';
 import {ClientFunction} from 'testcafe';
@@ -12,15 +13,15 @@ const emailSignature = 'Welcome to ' + hospitalName;
 var pageURL; 
 
 fixture ('Communities')
-  .page('http://qa.clinicion.com')
+  .page(loginURL)
   .beforeEach( async t => {
     await t
-    .typeText('#UserName', 'testcafe@zean.be')
-    .typeText('#Password', 'qiN...4A')
+    .typeText('#UserName', userName)
+    .typeText('#Password', password)
     .click('.btn-login');
 
   expect((await t.select('#Title')).value).to
-    .equal('Assess Team');
+    .equal('Assess in Unit...');
   
   await t.navigateTo('/Communities');
   expect((await t.select('#Title')).value).to.equal('Hospitals');
@@ -48,6 +49,7 @@ test('Creating Hosptial', async t => {
   .typeText('#EmailSignature', emailSignature);
   
   await culture();
+  await t.click('.team-colours-01');
   await colour();
  
   await t.click('.post-action'); 

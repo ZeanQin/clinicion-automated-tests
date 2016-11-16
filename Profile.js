@@ -1,12 +1,13 @@
+import {loginURL, userName, password} from './lib/LoginDetails.js';
 import {expect} from 'chai';
 import {Selector} from 'testcafe';
 
-fixture ('Profile')
-    .page('http://qa.clinicion.com')
+fixture('Profile')
+    .page(loginURL)
     .beforeEach( async t => {
       await t
-      .typeText('#UserName', 'testcafe@zean.be')
-      .typeText('#Password', 'qiN...4A')
+      .typeText('#UserName', userName)
+      .typeText('#Password', password)
       .click('.btn-login');
     });
 
