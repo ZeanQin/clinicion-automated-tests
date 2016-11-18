@@ -16,8 +16,6 @@ fixture ('Forum')
     .typeText('#Password', password)
     .click('.btn-login')
     .navigateTo('/Workspace/Questions');
-
-    expect((await t.select('#Title')).value).to.equal('Discuss');
   });
 
 test('Listing Forum', async t => {
