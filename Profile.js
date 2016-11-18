@@ -1,3 +1,4 @@
+import {querySelector} from './lib/Functions.js';
 import {loginURL, userName, password} from './lib/LoginDetails.js';
 import {expect} from 'chai';
 import {Selector} from 'testcafe';
@@ -9,23 +10,30 @@ fixture('Profile')
       .typeText('#UserName', userName)
       .typeText('#Password', password)
       .click('.btn-login');
+
+      // go to the profile page
+      await t.click(await querySelector('body > div.container > section > div.main-menu > section > div > a'));
     });
 
 test('Updating Profile', async t => {
-  // make sure we are on the landing page
-  expect((await t.select('#Title')).value).to.equal('Assess in Unit...');
+  // expect an update button
+  expect((await querySelector('body > div.container > section > footer > ul > li:nth-child(2) > a > i > span')).innerText).to.equal('Update');
 
-  // navigate to profile page and check the state
-  await t.click('.user-title a');
-  expect((await t.select('.action-bar-update i span')).innerText).to
-    .equal('Update');
+  await t.click(await querySelector('body > div.container > section > footer > ul > li:nth-child(2) > a'));
+  await t.click(await querySelector('body > div.container > section > footer > ul > li:nth-child(1) > a'));
+  
+  // now we are back on the profile page. expect the update button again
+  expect((await querySelector('body > div.container > section > footer > ul > li:nth-child(2) > a > i > span')).innerText).to.equal('Update');
 
-  // click on the update button and check the page state 
-  await t.click('.action-bar-update');
-  expect((await t.select('.post-action i span')).innerText).to.equal('Save');
-  expect((await t.select('#Title')).value).to.equal('Update Profile');
+});
 
-  // save changes and check the page state
-  await t.click('.post-action i span');
-  expect((await t.select('.action-bar-update i span')).innerText).to.equal('Update');
+test('Updating Settings', async t => {
+  // expect the settings button
+  expect((await querySelector('body > div.container > section > footer > ul > li:nth-child(3) > a > i > span')).innerText).to.equal('Settings');
+
+  await t.click(await querySelector('body > div.container > section > footer > ul > li:nth-child(3) > a'));
+  await t.click(await querySelector('body > div.container > section > footer > ul > li:nth-child(1) > a'));
+  
+  // now we are back on the profile page. expect the update button again
+  expect((await querySelector('body > div.container > section > footer > ul > li:nth-child(3) > a > i > span')).innerText).to.equal('Settings');
 });
