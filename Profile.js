@@ -13,7 +13,7 @@ fixture('Profile')
 
 test('Updating Profile', async t => {
   // make sure we are on the landing page
-  expect((await t.select('#Title')).value).to.equal('Assess Team');
+  expect((await t.select('#Title')).value).to.equal('Assess in Unit...');
 
   // navigate to profile page and check the state
   await t.click('.user-title a');
